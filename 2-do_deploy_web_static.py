@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """
-Fabric script that distributes an archive to your web servers using the function do_deploy.
+Fabric script that distributes an archive to your web servers
+using the function do_deploy.
 """
 
 from fabric.api import env, run, put
@@ -23,10 +24,11 @@ def do_deploy(archive_path):
         # Upload the archive to /tmp/ directory on the web server
         put(archive_path, '/tmp/')
 
-        # Extract the archive to /data/web_static/releases/<archive filename without extension>/
         archive_filename = os.path.basename(archive_path)
         archive_name_no_ext = os.path.splitext(archive_filename)[0]
-        release_path = '/data/web_static/releases/{}'.format(archive_name_no_ext)
+        release_path = '/data/web_static/releases/{}'.format(
+            archive_name_no_ext
+        )
         run('mkdir -p {}'.format(release_path))
         run('tar -xzf /tmp/{} -C {}'.format(archive_filename, release_path))
 
