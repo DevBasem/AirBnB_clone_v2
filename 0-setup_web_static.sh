@@ -1,21 +1,31 @@
 #!/usr/bin/env bash
 # Sets up a web server for deployment of web_static.
 
-apt-get update
-apt-get install -y nginx
+# Install Nginx if not already installed
+if ! command -v nginx &> /dev/null; then
+    sudo apt-get update
+    sudo apt-get install -y nginx
+fi
 
-mkdir -p /data/web_static/releases/test/
-mkdir -p /data/web_static/shared/
-echo "Holberton School" > /data/web_static/releases/test/index.html
-ln -sf /data/web_static/releases/test/ /data/web_static/current
+# Create necessary directories
+sudo mkdir -p /data/web_static/releases/test/
+sudo mkdir -p /data/web_static/shared/
 
-chown -R ubuntu /data/
-chgrp -R ubuntu /data/
+# Create a fake HTML file
+echo "Holberton School" | sudo tee /data/web_static/releases/test/index.html > /dev/null
 
-printf %s "server {
+# Create symbolic link
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
+
+# Give ownership to the ubuntu user and group
+sudo chown -R ubuntu:ubuntu /data/
+
+# Update Nginx configuration
+config_file="/etc/nginx/sites-available/default"
+nginx_config="server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    add_header X-Served-By $HOSTNAME;
+    add_header X-Served-By \$HOSTNAME;
     root   /var/www/html;
     index  index.html index.htm;
 
@@ -30,9 +40,15 @@ printf %s "server {
 
     error_page 404 /404.html;
     location /404 {
-      root /var/www/html;
-      internal;
+        root /var/www/html;
+        internal;
     }
-}" > /etc/nginx/sites-available/default
+}"
 
-service nginx restart
+# Overwrite the existing Nginx configuration
+echo "$nginx_config" | sudo tee "$config_file" > /dev/null
+
+# Restart Nginx
+sudo service nginx restart
+
+exit 0
