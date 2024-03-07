@@ -35,8 +35,7 @@ nginx_config="location /hbnb_static/ {
 
 # Add the Nginx configuration if not present
 if ! sudo grep -q "location /hbnb_static/" "$config_file"; then
-    # Find the server block and add the location block after it
-    sudo sed -i '/server {/a \\n'"$nginx_config" "$config_file"
+    sudo sed -i '/server {/a '"$nginx_config" "$config_file"
 fi
 
 # Restart Nginx
