@@ -39,7 +39,7 @@ class BaseModel:
                     setattr(self, key, value)
                     if (value is None
                             and key in ['id', 'created_at', 'updated_at']):
-                        raise TypeError(f"{key} cannot be None")
+                        raise TypeError("{} cannot be None".format(key))
             if 'id' not in kwargs:
                 self.id = str(uuid.uuid4())
             if 'created_at' not in kwargs:
