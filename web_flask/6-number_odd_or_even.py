@@ -50,7 +50,11 @@ def number_template(n):
 def number_odd_or_even(n):
     """Displays an HTML page only if n is an integer"""
     odd_or_even = 'odd' if n % 2 != 0 else 'even'
-    return render_template('6-number_odd_or_even.html', number=n, odd_even=odd_or_even)
+    return render_template(
+        '6-number_odd_or_even.html',
+        number=n,
+        odd_even=odd_or_even
+    )
 
 
 if __name__ == '__main__':
