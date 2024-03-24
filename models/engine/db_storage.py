@@ -66,6 +66,12 @@ class DBStorage:
         """
         self.__session.commit()
 
+    def get(self, cls, id):
+        """
+        Retrieves an object from the database by its ID
+        """
+        return self.__session.query(cls).get(id)
+
     def delete(self, obj=None):
         """
         Deletes from the current database session obj if not None
