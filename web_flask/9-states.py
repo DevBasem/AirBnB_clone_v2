@@ -8,33 +8,22 @@ from models import storage
 from models.state import State
 
 app = Flask(__name__)
-
-
-@app.route('/states', strict_slashes=False)
-def states():
-    """Displays a HTML page showing all states."""
-    states = storage.all(State).values()
-    states = sorted(states, key=lambda state: state.name)
-
-    return render_template('9-states.html', states=states)
-
-
-@app.route('/states/<state_id>', strict_slashes=False)
-def state_cities(state_id):
-    """Displays a HTML page showing cities of a state."""
-    state = storage.get(State, state_id)
-
-    if state:
-        cities = sorted(state.cities, key=lambda city: city.name)
-        return render_template('9-states.html', state=state, cities=cities)
-    else:
-        return render_template('9-states.html', not_found=True)
+app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
-def teardown_db(exception):
-    """Closes the current SQLAlchemy session."""
+def dispose(exception):
+    """ Remove current session """
     storage.close()
+
+
+@app.route('/states/')
+@app.route('/states/<id>')
+def states_and_state(id=None):
+    """ Display list of all the states """
+    if id:
+        id = 'State.{}'.format(id)
+    return render_template('9-states.html', states=storage.all(State), id=id)
 
 
 if __name__ == '__main__':
